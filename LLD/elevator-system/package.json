@@ -1,0 +1,19 @@
+{
+  "name": "elevator-system",
+  "version": "1.0.0",
+  "description": "Low-Level Design implementation of Elevator System",
+  "main": "dist/console/ConsoleInterface.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/console/ConsoleInterface.js",
+    "dev": "ts-node src/console/ConsoleInterface.ts"
+  },
+  "keywords": ["elevator", "lld", "typescript"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0"
+  }
+}

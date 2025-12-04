@@ -1,0 +1,6 @@
+export enum ElevatorState {
+  MOVING_UP = 'MOVING_UP',
+  MOVING_DOWN = 'MOVING_DOWN',
+  IDLE = 'IDLE',
+  MAINTENANCE = 'MAINTENANCE'
+}
