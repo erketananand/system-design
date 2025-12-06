@@ -225,8 +225,11 @@ classDiagram
         -berthType: BerthType
         -coachId: string
         -bookings: Map~string, string~
+        -lockManager: SeatLockManager
         +Seat(seatNumber, berthType, coachId, id)
+        +tryLock(date: string, bookingId: string): boolean
         +book(date: string, bookingId: string): boolean
+        +releaseLock(date: string, bookingId: string): boolean
         +release(date: string): void
         +isAvailableOn(date: Date): boolean
         +getId(): string
@@ -432,6 +435,7 @@ classDiagram
         +AutomaticAllocationStrategy()
         +allocateSeats(train: Train, passengers: Passenger[], coachType: CoachType, date: Date): AllocationResult
         +getStrategyName(): string
+        -releaseAllLocks(lockedSeats: Array, bookingId: string): void
         -getDateKey(date: Date): string
     }
 
@@ -439,7 +443,8 @@ classDiagram
         +BerthPreferenceStrategy()
         +allocateSeats(train: Train, passengers: Passenger[], coachType: CoachType, date: Date): AllocationResult
         +getStrategyName(): string
-        -findMatchingBerth(availableSeats: Seat[], preference: BerthPreference): Seat | null
+        -releaseAllLocks(lockedSeats: Array, bookingId: string): void
+        -mapPreferenceToBerthType(preference: BerthPreference): BerthType
         -getDateKey(date: Date): string
     }
 
@@ -689,6 +694,35 @@ classDiagram
         +static error(message: string): void
     }
 
+    class SeatLockManager {
+        <<singleton>>
+        -static instance: SeatLockManager
+        -locks: Map~string, SeatLock~
+        -LOCK_TIMEOUT_MS: number
+        -SeatLockManager()
+        +static getInstance(): SeatLockManager
+        +tryLock(seatId: string, date: string, bookingId: string): boolean
+        +releaseLock(seatId: string, date: string, bookingId: string): boolean
+        +isLocked(seatId: string, date: string): boolean
+        +getLockInfo(seatId: string, date: string): SeatLock | null
+        +extendLock(seatId: string, date: string, bookingId: string): boolean
+        +releaseAllLocksForBooking(bookingId: string): number
+        +getActiveLockCount(): number
+        +clearAllLocks(): void
+        -cleanupExpiredLocks(): void
+        -startCleanupJob(): void
+        -getLockKey(seatId: string, date: string): string
+    }
+
+    class SeatLock {
+        <<interface>>
+        +seatId: string
+        +bookingId: string
+        +date: string
+        +lockedAt: Date
+        +expiresAt: Date
+    }
+
     %% Console Interface
     class ConsoleInterface {
         -userService: UserService
@@ -784,6 +818,11 @@ classDiagram
     
     SetupService --> StationService : uses
     SetupService --> TrainService : uses
+    
+    Seat --> SeatLockManager : uses
+    SeatLockManager ..> SeatLock : manages
+    AutomaticAllocationStrategy --> Seat : locks/books
+    BerthPreferenceStrategy --> Seat : locks/books
 ```
 
 ## Relationship Legend
@@ -820,7 +859,7 @@ classDiagram
 
 ## Design Patterns Used
 
-1. **Singleton Pattern**: `InMemoryDatabase`, `BookingNotifier`
+1. **Singleton Pattern**: `InMemoryDatabase`, `BookingNotifier`, `SeatLockManager`
 2. **State Pattern**: `IBookingState` and implementations (PendingPayment, Confirmed, RAC, Waitlist, Cancelled)
 3. **Strategy Pattern**: 
    - Payment strategies (`IPaymentMethod`)
@@ -833,9 +872,11 @@ classDiagram
 
 - **Multi-coach train management** with different coach types
 - **Dynamic seat allocation** with berth preferences
+- **Concurrency-safe seat locking** prevents double booking with timeout mechanism
 - **Booking state management** (Pending → Confirmed/RAC/Waitlist → Cancelled)
 - **Multiple payment methods** with strategy pattern
 - **Real-time notifications** via observer pattern
 - **Route scheduling** with operating days
 - **Refund calculation** for cancellations
 - **User authentication** and profile management
+- **Automatic lock cleanup** removes expired locks to prevent resource leaks

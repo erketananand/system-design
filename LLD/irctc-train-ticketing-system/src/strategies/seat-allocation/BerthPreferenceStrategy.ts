@@ -14,6 +14,8 @@ export class BerthPreferenceStrategy implements ISeatAllocationStrategy {
   ): AllocationResult {
     const coaches = train.getCoachesByType(coachType);
     const allocatedSeats = new Map();
+    const lockedSeats: Array<{ seat: any; coach: any; dateKey: string }> = [];
+    const tempBookingId = `temp-${Date.now()}`;
 
     if (coaches.length === 0) {
       return {
@@ -23,56 +25,89 @@ export class BerthPreferenceStrategy implements ISeatAllocationStrategy {
       };
     }
 
-    for (const passenger of passengers) {
-      let allocated = false;
+    try {
+      for (const passenger of passengers) {
+        let allocated = false;
+        const dateKey = this.getDateKey(date);
 
-      // Try to allocate based on preference
-      if (passenger.berthPreference !== BerthPreference.NO_PREFERENCE) {
-        const preferredBerth = this.mapPreferenceToBerthType(passenger.berthPreference);
+        // Try to allocate based on preference
+        if (passenger.berthPreference !== BerthPreference.NO_PREFERENCE) {
+          const preferredBerth = this.mapPreferenceToBerthType(passenger.berthPreference);
 
-        for (const coach of coaches) {
-          const availableSeats = coach.getAvailableSeats(date);
-          const preferredSeat = availableSeats.find(s => s.berthType === preferredBerth);
+          for (const coach of coaches) {
+            const availableSeats = coach.getAvailableSeats(date);
+            const preferredSeat = availableSeats.find(s => s.berthType === preferredBerth);
 
-          if (preferredSeat) {
-            preferredSeat.book(this.getDateKey(date), 'temp-booking-id');
-            passenger.assignSeat(coach.coachNumber, preferredSeat.seatNumber);
-            allocatedSeats.set(passenger.id, { coach, seat: preferredSeat });
-            allocated = true;
-            break;
+            if (preferredSeat) {
+              // Try to lock the seat
+              if (preferredSeat.tryLock(dateKey, tempBookingId)) {
+                lockedSeats.push({ seat: preferredSeat, coach, dateKey });
+                passenger.assignSeat(coach.coachNumber, preferredSeat.seatNumber);
+                allocatedSeats.set(passenger.id, { coach, seat: preferredSeat });
+                allocated = true;
+                break;
+              }
+            }
           }
+        }
+
+        // If preference not satisfied, allocate any available seat
+        if (!allocated) {
+          for (const coach of coaches) {
+            const availableSeats = coach.getAvailableSeats(date);
+            if (availableSeats.length > 0) {
+              const seat = availableSeats[0];
+              
+              // Try to lock the seat
+              if (seat.tryLock(dateKey, tempBookingId)) {
+                lockedSeats.push({ seat, coach, dateKey });
+                passenger.assignSeat(coach.coachNumber, seat.seatNumber);
+                allocatedSeats.set(passenger.id, { coach, seat });
+                allocated = true;
+                break;
+              }
+            }
+          }
+        }
+
+        if (!allocated) {
+          // Release all previously locked seats
+          this.releaseAllLocks(lockedSeats, tempBookingId);
+          
+          return {
+            success: false,
+            allocatedSeats: new Map(),
+            message: `Could not allocate seat for passenger: ${passenger.name}. All seats taken or locked.`
+          };
         }
       }
 
-      // If preference not satisfied, allocate any available seat
-      if (!allocated) {
-        for (const coach of coaches) {
-          const availableSeats = coach.getAvailableSeats(date);
-          if (availableSeats.length > 0) {
-            const seat = availableSeats[0];
-            seat.book(this.getDateKey(date), 'temp-booking-id');
-            passenger.assignSeat(coach.coachNumber, seat.seatNumber);
-            allocatedSeats.set(passenger.id, { coach, seat });
-            allocated = true;
-            break;
-          }
-        }
+      // All passengers allocated successfully
+      // Now actually book the seats
+      for (const { seat, dateKey } of lockedSeats) {
+        seat.book(dateKey, tempBookingId);
       }
 
-      if (!allocated) {
-        return {
-          success: false,
-          allocatedSeats,
-          message: `Could not allocate seat for passenger: ${passenger.name}`
-        };
-      }
+      return {
+        success: true,
+        allocatedSeats,
+        message: 'All seats allocated successfully with berth preferences.'
+      };
+
+    } catch (error) {
+      // On any error, release all locks
+      this.releaseAllLocks(lockedSeats, tempBookingId);
+      throw error;
     }
+  }
 
-    return {
-      success: true,
-      allocatedSeats,
-      message: 'All seats allocated successfully with berth preferences.'
-    };
+  private releaseAllLocks(
+    lockedSeats: Array<{ seat: any; coach: any; dateKey: string }>,
+    bookingId: string
+  ): void {
+    for (const { seat, dateKey } of lockedSeats) {
+      seat.releaseLock(dateKey, bookingId);
+    }
   }
 
   private mapPreferenceToBerthType(preference: BerthPreference): BerthType {
