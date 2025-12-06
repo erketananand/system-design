@@ -1,0 +1,8 @@
+export enum BerthPreference {
+  LOWER = 'LOWER',
+  MIDDLE = 'MIDDLE',
+  UPPER = 'UPPER',
+  SIDE_LOWER = 'SIDE_LOWER',
+  SIDE_UPPER = 'SIDE_UPPER',
+  NO_PREFERENCE = 'NO_PREFERENCE'
+}

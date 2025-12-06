@@ -1,0 +1,19 @@
+{
+  "name": "irctc-train-ticketing-system",
+  "version": "1.0.0",
+  "description": "IRCTC Train Ticketing System - LLD Implementation",
+  "main": "dist/console/ConsoleInterface.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/console/ConsoleInterface.js",
+    "dev": "ts-node src/console/ConsoleInterface.ts"
+  },
+  "keywords": ["lld", "typescript", "irctc", "design-patterns", "train-booking"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.1"
+  }
+}
