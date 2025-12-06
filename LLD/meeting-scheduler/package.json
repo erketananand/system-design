@@ -1,0 +1,19 @@
+{
+  "name": "meeting-scheduler",
+  "version": "1.0.0",
+  "description": "Meeting Scheduler (Google Calendar) LLD Implementation",
+  "main": "dist/console/ConsoleInterface.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/console/ConsoleInterface.js",
+    "dev": "ts-node src/console/ConsoleInterface.ts"
+  },
+  "keywords": ["lld", "typescript", "design-patterns", "calendar", "meeting-scheduler"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.1"
+  }
+}
