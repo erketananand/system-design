@@ -1,0 +1,10 @@
+// Barrel export for all models
+export { User } from './User';
+export { Account } from './Account';
+export { Stock } from './Stock';
+export { Order } from './Order';
+export { Trade } from './Trade';
+export { Holding } from './Holding';
+export { Portfolio } from './Portfolio';
+export { Watchlist } from './Watchlist';
+export { Transaction } from './Transaction';

@@ -1,0 +1,30 @@
+{
+  "name": "stock-broker-zerodha",
+  "version": "1.0.0",
+  "description": "Stock Broker (Zerodha) LLD Implementation - Order Management, Portfolio Tracking, Watchlists",
+  "main": "dist/console/ConsoleInterface.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/console/ConsoleInterface.js",
+    "dev": "ts-node src/console/ConsoleInterface.ts",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "lld",
+    "typescript",
+    "design-patterns",
+    "stock-broker",
+    "trading",
+    "portfolio-management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
