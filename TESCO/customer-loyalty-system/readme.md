@@ -1,4 +1,4 @@
-## Customer Loyalty Management System - Complete Design
+## Customer Loyalty Management System
 
 ### **System Architecture**
 
@@ -53,7 +53,7 @@
 
 ### **1. Loyalty Service**
 
-- **Responsibilities**: Member enrollment, profile management, program configuration[^4][^1]
+- **Responsibilities**: Member enrollment, profile management, program configuration[^4] [^1]
 - **Features**:
     - Member registration and onboarding
     - Multi-tier program management
@@ -67,7 +67,7 @@
 
 ### **2. Points Engine**
 
-- **Responsibilities**: Points accrual, redemption, expiration management[^3][^5]
+- **Responsibilities**: Points accrual, redemption, expiration management[^3] [^5]
 - **Features**:
     - Real-time points calculation based on transactions
     - Bonus points for promotions
@@ -79,7 +79,7 @@
 
 ### **3. Tier Service**
 
-- **Responsibilities**: Tier qualification, upgrades/downgrades, tier benefits[^6][^3]
+- **Responsibilities**: Tier qualification, upgrades/downgrades, tier benefits[^6] [^3]
 - **Tier Types**: Bronze → Silver → Gold → Platinum
 - **Features**:
     - Automatic tier calculations based on points/spending
@@ -90,7 +90,7 @@
 
 ### **4. Rewards Service**
 
-- **Responsibilities**: Rewards catalog, redemption processing[^1][^3]
+- **Responsibilities**: Rewards catalog, redemption processing[^1] [^3]
 - **Reward Types**:
     - Discount coupons
     - Free products
@@ -102,7 +102,7 @@
 
 ### **5. Analytics Service**
 
-- **Responsibilities**: Member segmentation, program performance metrics[^7][^1]
+- **Responsibilities**: Member segmentation, program performance metrics[^7] [^1]
 - **Metrics**:
     - Points earning/burn rate
     - Member lifetime value
@@ -1362,15 +1362,15 @@ console.log('Voucher code:', redemption.voucherCode);
 
 ## Key Design Patterns
 
-1. **Strategy Pattern**: Points calculation strategies[^3][^1]
+1. **Strategy Pattern**: Points calculation strategies[^3] [^1]
 2. **Facade Pattern**: LoyaltyService simplifies complex subsystems[^1]
 3. **State Pattern**: Member status lifecycle management
 4. **Observer Pattern**: Event-driven notifications[^1]
 5. **Repository Pattern**: Data access abstraction[^5]
 6. **Factory Pattern**: Transaction creation with idempotency[^5]
 
-This comprehensive design ensures scalability, maintainability, and provides a robust foundation for enterprise loyalty programs with millions of members.[^2][^6][^5][^3][^1]
-<span style="display:none">[^10][^8][^9]</span>
+This comprehensive design ensures scalability, maintainability, and provides a robust foundation for enterprise loyalty programs with millions of members.[^2] [^6] [^5] [^3] [^1]
+<span style="display:none">[^10] [^8] [^9]</span>
 
 <div align="center">⁂</div>
 
