@@ -1,0 +1,19 @@
+{
+  "name": "nobroker-lld",
+  "version": "1.0.0",
+  "description": "NoBroker Real Estate Platform - LLD Implementation",
+  "main": "dist/console/ConsoleInterface.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/console/ConsoleInterface.js",
+    "dev": "ts-node src/console/ConsoleInterface.ts"
+  },
+  "keywords": ["lld", "typescript", "real-estate", "nobroker", "design-patterns"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.1"
+  }
+}

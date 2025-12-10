@@ -1,0 +1,7 @@
+export enum PgSharingType {
+  SINGLE = 'SINGLE',
+  DOUBLE = 'DOUBLE',
+  TRIPLE = 'TRIPLE',
+  FOUR_SHARING = 'FOUR_SHARING',
+  FIVE_SHARING = 'FIVE_SHARING'
+}

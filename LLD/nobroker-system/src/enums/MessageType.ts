@@ -1,0 +1,6 @@
+export enum MessageType {
+  TEXT = 'TEXT',
+  VISIT_PROPOSAL = 'VISIT_PROPOSAL',
+  OFFER_PROPOSAL = 'OFFER_PROPOSAL',
+  SYSTEM = 'SYSTEM'
+}
