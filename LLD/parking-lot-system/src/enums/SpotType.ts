@@ -1,0 +1,6 @@
+export enum SpotType {
+  COMPACT = 'COMPACT',
+  STANDARD = 'STANDARD',
+  LARGE = 'LARGE',
+  HANDICAPPED = 'HANDICAPPED'
+}
